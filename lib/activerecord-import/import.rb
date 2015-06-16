@@ -451,6 +451,8 @@ class ActiveRecord::Base
         association = model.association(association_reflection.name)
         association.loaded!
 
+        association = [association.target].compact unless association.respond_to?(:select)
+
         changed_objects = association.select {|a| a.new_record? || a.changed?}
         changed_objects.each do |child|
           child.send("#{association_reflection.foreign_key}=", model.id)
