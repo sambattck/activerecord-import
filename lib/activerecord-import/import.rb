@@ -417,8 +417,9 @@ class ActiveRecord::Base
     def set_ids_and_mark_clean(models, import_result)
       unless models.nil?
         import_result.ids.each_with_index do |id, index|
-          models[index].id = id.to_i
-          models[index].instance_variable_get(:@changed_attributes).clear # mark the model as saved
+          model = models[index]
+          model.assign_attributes(model.class.primary_key => id)
+          model.instance_variable_get(:@changed_attributes).clear # mark the model as saved
         end
       end
     end
